@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Angle Project Webpage</title>
+    <style>
+      #webcam {
+        width: 640px;
+        height: 480px;
+        display: block;
+        margin: 0 auto;
+      }
+      #error-msg {
+        text-align: center;
+        color: red;
+        font-size: 1.2em;
+      }
+    </style>
+    <script>
+      function handleImageError() {
+        var webcam = document.getElementById("webcam");
+        var errorMsg = document.getElementById("error-msg");
+        webcam.style.display = "none";
+        errorMsg.style.display = "block";
+      }
+
+      function checkImage() {
+        var webcam = document.getElementById("webcam");
+        var errorMsg = document.getElementById("error-msg");
+        var canvas = document.createElement("canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width = webcam.width;
+        canvas.height = webcam.height;
+        ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+        var imageData = ctx.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        ).data;
+
+        // Check if all pixel values are 0 (blank image)
+        var isBlank = imageData.every(function (value) {
+          return value === 0;
+        });
+
+        if (isBlank) {
+          webcam.style.display = "none";
+          errorMsg.style.display = "block";
+        }
+      }
+
+      // Call checkImage() after a delay to give the image time to load
+      setTimeout(checkImage, 1000);
+    </script>
+  </head>
+  <body>
+    <h1>Angle Project Webpage</h1>
+    <img
+      id="webcam"
+      src="http://127.0.0.1:5000/video_feed"
+      onerror="handleImageError()"
+      width="640"
+      height="480"
+      alt="Webcam Feed"
+    />
+    <div id="error-msg" style="display: none">
+      <p>
+        Error: Unable to read webcam feed or the feed contains a blank screen.
+      </p>
+    </div>
+  </body>
+</html>
